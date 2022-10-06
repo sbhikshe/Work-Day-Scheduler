@@ -5,12 +5,11 @@ calendarEl = $('.container');
 var momentObj = moment();
 
 /* only has appointments for today ? */
-/*
+
 var appointmentObj = {
-    time: ,
-    appointment: 
+    time: undefined,
+    appointment: undefined
 }
-*/
 
 /* list of appointment objects */
 var scheduleForToday = [];
@@ -18,7 +17,7 @@ var scheduleForToday = [];
 function setupTimeBlocks() {
 
     var hourNow = moment().format("HH");
-    //var hourNow = 18; for testing
+    //var hourNow = Math.floor(Math.random() * 24); for testing
     console.log("Hour now:"+  hourNow);
 
     /* for 9am to 5pm */
@@ -60,19 +59,38 @@ function setupTimeBlocks() {
 }
 function showCalendar() {
     console.log("on load");
-    var dateStr = momentObj.format('dddd, MMMM Do');
+    var dateStr = moment().format('dddd, MMMM Do');
     currentDayEl.text(dateStr);
 
+    /* show calendar for the day */
     setupTimeBlocks();
 
-    /* show calendar for the day */
     /* - retrieve from local storage */
     /* - read into the schedule array */
     /* - write to the list of forms */
 
-    /* check every hour to update the background colors for the time blocks */
+    /* check every 5 mins to update the background colors for the time blocks */
     /* current becomes grey, next becomes red */
-    /* setInterval() running every minute / 5 mins ?? */
+    /*
+    var timerId = setInterval(function() {
+        //hourNow = moment().format("HH");
+        var hourNow = Math.floor(Math.random() * 24);
+        console.log("random time: " + hourNow);
+        // should we remove what they have currently before adding? 
+        for (var i = 9; i <= 17; i++){
+            var apptEl = calendarEl.children().children(i-9).eq(1);
+            console.log(apptEl);
+            apptEl.removeClass("past present future");
+            if (i < hourNow) {
+                apptEl.addClass("past");
+            } else if (i == hourNow) {
+                apptEl.addClass("present");
+            } else if (i > hourNow) {
+                apptEl.addClass("future");
+            }        
+        }
+    },30000);
+    */
 }
 
 /* add event listener for each save button */
@@ -80,5 +98,25 @@ function showCalendar() {
 /* or save in the schedule, and write to the local storage on closing the app? */
 /* On open, update the currentDayEl */
 
+function handleSaveAppointment(event) {
+    //event.preventDefault();
+    console.log("handleSaveAppointment: " + $(event.target));
+
+    /* get the span text - time */
+    /* get the textarea contents - appointment */
+    /* store to appointmentObj */
+    /* JSON.stringify() and store to localStorage */
+    var timeElement = $(event.target).siblings("span");
+    console.log(timeElement);
+    var apptEl = $(event.target).siblings("textarea");
+    console.log(apptEl);
+    appointmentObj.time = timeElement.text();
+    appointmentObj.appointment = apptEl.val();
+    console.log("Time: " + appointmentObj.time);
+    console.log("Details: " + appointmentObj.appointment);
+    localStorage.setItem("appointments", JSON.stringify(appointmentObj));
+
+}
 
 $('document').ready(showCalendar);
+calendarEl.on('click', "button", handleSaveAppointment);
