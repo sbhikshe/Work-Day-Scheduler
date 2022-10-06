@@ -4,20 +4,18 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link
-      rel="stylesheet"
+    <link rel="stylesheet"
       href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     />
-    <link
-      rel="stylesheet"
+    <link rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
       integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
       crossorigin="anonymous"
     />
-    <link
+    <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap"
-      rel="stylesheet"
     />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded" />
     <link rel="stylesheet" href="./assets/css/style.css" />
     <title>Work Day Scheduler</title>
   </head>
@@ -30,8 +28,84 @@
     </header>
     <div class="container">
       <!-- Timeblocks go here -->
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">9 AM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">10 AM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">11 AM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1col-lg-1" id="timeOfTheDay">12 PM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">1 PM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">2 PM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">3 PM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">4 PM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
+          <div class="row">
+            <span class="hour col-1 col-sm-1 col-md-1 col-lg-1" id="timeOfTheDay">5 PM</span>
+            <textarea class="col-10 col-sm-10 col-md-10 col-lg-10" style = "border: 1px; border-color: black; border-style: solid;" placeholder="Enter your appointment here"></textarea>
+            <button class="saveBtn col-1 col-sm-1 col-md-1 col-lg-1">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>
     </div>
-
+    <div>
+      <hr />
+    </div>       
+<!--                    
+          <div class="time-block input-group align-items-center">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="timeOfTheDay">time</span>
+            </div>
+            <input type="text" class="form-control" placeholder="Enter your appointment here" aria-label="appointment" aria-describedby="timeOfTheDay">
+            <button class="saveBtn btn btn-outline-secondary">
+              <i class="material-symbols-rounded">Save</i>
+            </button>
+          </div>  
+-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
     <script src="./assets/js/script.js"></script>
