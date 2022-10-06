@@ -107,14 +107,27 @@ function handleSaveAppointment(event) {
     /* store to appointmentObj */
     /* JSON.stringify() and store to localStorage */
     var timeElement = $(event.target).siblings("span");
-    console.log(timeElement);
+    //console.log(timeElement);
     var apptEl = $(event.target).siblings("textarea");
-    console.log(apptEl);
+    //console.log(apptEl);
     appointmentObj.time = timeElement.text();
     appointmentObj.appointment = apptEl.val();
-    console.log("Time: " + appointmentObj.time);
-    console.log("Details: " + appointmentObj.appointment);
-    localStorage.setItem("appointments", JSON.stringify(appointmentObj));
+    //console.log("Time: " + appointmentObj.time);
+    //console.log("Details: " + appointmentObj.appointment);
+
+    var tempSchedule = JSON.parse(localStorage.getItem("appointments"));
+    if (!tempSchedule) {
+        scheduleForToday.push(appointmentObj);
+        localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
+    } else {
+        scheduleForToday = tempSchedule;
+        //console.log("tempSchedule: " + tempSchedule);
+        scheduleForToday.push(appointmentObj);
+        //console.log("scheduleForToday: " + scheduleForToday);
+
+        localStorage.removeItem("appointments");
+        localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
+    }
 
 }
 
