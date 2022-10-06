@@ -15,10 +15,55 @@ var appointmentObj = {
 /* list of appointment objects */
 var scheduleForToday = [];
 
+function setupTimeBlocks() {
+
+    var hourNow = moment().format("HH");
+    //var hourNow = 18; for testing
+    console.log("Hour now:"+  hourNow);
+
+    /* for 9am to 5pm */
+    for (var i= 9; i <= 17; i++) {
+        divEl = $('<div>');
+        divEl.addClass("row");
+
+        spanEl = $('<span>');
+        spanEl.addClass("hour col-1 col-sm-1 col-md-1 col-lg-1");
+        if ( i < 12) {
+            spanEl.text(i + "AM");
+        } else if (i == 12) {
+            spanEl.text(i + "PM");
+        } else if ( i > 12) {
+         spanEl.text(i-12 + "PM");
+        }
+        divEl.append(spanEl);
+
+        appointmentEl = $('<textarea>');
+        appointmentEl.addClass("col-10 col-sm-10 col-md-10 col-lg-10");
+        if (i < hourNow) {
+            appointmentEl.addClass("past");
+        } else if (i == hourNow) {
+            appointmentEl.addClass("present");
+        } else if (i > hourNow) {
+            appointmentEl.addClass("future");
+        }
+        divEl.append(appointmentEl);
+
+        saveBtnEl = $('<button>');
+        saveBtnEl.addClass("saveBtn col-1 col-sm-1 col-md-1 col-lg-1");
+    
+        iconEl = $('<i class="material-symbols-rounded">Save</i>');
+        saveBtnEl.append(iconEl);
+        divEl.append(saveBtnEl);
+
+        calendarEl.append(divEl);
+    }
+}
 function showCalendar() {
     console.log("on load");
     var dateStr = momentObj.format('dddd, MMMM Do');
     currentDayEl.text(dateStr);
+
+    setupTimeBlocks();
 
     /* show calendar for the day */
     /* - retrieve from local storage */
