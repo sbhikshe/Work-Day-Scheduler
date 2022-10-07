@@ -13,7 +13,6 @@ var scheduleForToday = [];
 function setupTimeBlocks() {
 
     var hourNow = moment().format("HH");
-    hourNow = 13; // remove
     console.log("Hour now:"+  hourNow);
 
     /* for 9am to 5pm */
@@ -40,6 +39,7 @@ function setupTimeBlocks() {
             appointmentEl.prop('disabled', true); 
         } else if (i == hourNow) {
             appointmentEl.addClass("present");
+            presentHour = hourNow;
         } else if (i > hourNow) {
             appointmentEl.addClass("future");
         }
@@ -63,22 +63,18 @@ function timeStrToNumber(timeStr) {
     var hour;
 
     var timeArray = timeStr.split(" ");
-    console.log("timeArray:" + timeArray[0] + "," + timeArray[1]);
-
     if ((timeArray[0] == 12) && (timeArray[1] == "PM")) {
         hour = 12;
-        console.log("Noon hour: " + hour);
     } else if (timeArray[1] == "PM") {
         hour = 12 + Number(timeArray[0]);
-        console.log("PM hour: " + hour);
     } else {
         hour = Number(timeArray[0]);
-        console.log("AM hour: " + hour);
     }
     return hour;
 }
 function showCalendar() {
-    console.log("on load");
+
+    /* Set today's date on the header */
     var dateStr = moment().format('dddd, MMMM Do');
     currentDayEl.text(dateStr);
 
@@ -94,46 +90,19 @@ function showCalendar() {
 
         for (var i = 0; i < scheduleForToday.length; i++) {
             var apptObj = scheduleForToday[i];
-            console.log("Appt time: " + apptObj.time);
-            console.log("Appt details: " + apptObj.appointment);
 
             /* get the index of the div for this appointment */
             /* get the hour, subtract 9 to get this index */
             var hour = timeStrToNumber(apptObj.time);
             var divIndex = hour - 9;
             var tempDiv = calendarEl.children().eq(divIndex);
-            console.log(tempDiv.children().eq(0)); // span
-            console.log(tempDiv.children().eq(1)); // textarea
+            //console.log(tempDiv.children().eq(0)); -> span
+            //console.log(tempDiv.children().eq(1)); -> textarea
 
             /* set the appointment to the textarea */
             tempDiv.children(1).eq(1).val(apptObj.appointment);
-            console.log(tempDiv.children().eq(0));
-            console.log(tempDiv.children().eq(1));
         }
      } 
-
-    /* check every 5 mins to update the background colors for the time blocks */
-    /* current becomes grey, next becomes red */
-    /*
-    var timerId = setInterval(function() {
-        //hourNow = moment().format("HH");
-        var hourNow = Math.floor(Math.random() * 24);
-        console.log("random time: " + hourNow);
-        // should we remove what they have currently before adding? 
-        for (var i = 9; i <= 17; i++){
-            var apptEl = calendarEl.children().children(i-9).eq(1);
-            console.log(apptEl);
-            apptEl.removeClass("past present future");
-            if (i < hourNow) {
-                apptEl.addClass("past");
-            } else if (i == hourNow) {
-                apptEl.addClass("present");
-            } else if (i > hourNow) {
-                apptEl.addClass("future");
-            }        
-        }
-    },30000);
-    */
 }
 
 function handleSaveAppointment(event) {
@@ -149,12 +118,7 @@ function handleSaveAppointment(event) {
 
     /* check if appointment is in the past */
     hourNow = moment().format("HH");
-    hourNow = 13; // remove
-    console.log("hourNow: " + hourNow);
-
-    console.log("appointmentObj.time:" + appointmentObj.time);
     var hourRequested = timeStrToNumber(appointmentObj.time);
-    console.log("hourRequested: " + hourRequested);
 
     if (hourNow > hourRequested) {
         alert("Unable to make an appointment in the past.");
@@ -179,7 +143,7 @@ function handleSaveAppointment(event) {
                 isExists = true;
             }
         }
-        /* there are previous appointment but not for this time block */
+        /* there are previous appointments but not for this time block */
         /* add new appointment */
         if(!isExists) {
             scheduleForToday.push(appointmentObj);
@@ -188,7 +152,6 @@ function handleSaveAppointment(event) {
         localStorage.removeItem("appointments");
         localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
     }
-
 }
 
 /* When this document has loaded, update the date in the header */
