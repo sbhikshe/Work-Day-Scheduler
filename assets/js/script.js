@@ -2,10 +2,6 @@ rootEl = $('header');
 currentDayEl = $('#currentDay');
 calendarEl = $('.container');
 
-var momentObj = moment();
-
-/* only has appointments for today ? */
-
 var appointmentObj = {
     time: undefined,
     appointment: undefined
@@ -28,11 +24,11 @@ function setupTimeBlocks() {
         spanEl = $('<span>');
         spanEl.addClass("hour col-1 col-sm-1 col-md-1 col-lg-1");
         if ( i < 12) {
-            spanEl.text(i + "AM");
+            spanEl.text(i + " AM");
         } else if (i == 12) {
-            spanEl.text(i + "PM");
+            spanEl.text(i + " PM");
         } else if ( i > 12) {
-         spanEl.text(i-12 + "PM");
+         spanEl.text(i-12 + " PM");
         }
         divEl.append(spanEl);
 
@@ -65,9 +61,29 @@ function showCalendar() {
     /* show calendar for the day */
     setupTimeBlocks();
 
+    /* show stored appointments */
     /* - retrieve from local storage */
     /* - read into the schedule array */
-    /* - write to the list of forms */
+    /* - write to the <span> and <textarea> for each obj */
+    var tempSchedule = JSON.parse(localStorage.getItem("appointments"));
+    if (tempSchedule) {
+        scheduleForToday = tempSchedule;
+
+        for (var i = 0; i < scheduleForToday.length; i++) {
+            var apptObj = scheduleForToday[i];
+            console.log("Appt time: " + apptObj.time);
+            console.log("Appt details: " + apptObj.appointment);
+
+            var tempDiv = calendarEl.children().eq(i);
+            console.log(tempDiv.children().eq(0));
+            console.log(tempDiv.children().eq(1));
+
+            tempDiv.children(0).eq(0).text(apptObj.time); // span element
+            tempDiv.children(1).eq(1).val(apptObj.appointment); // textarea element
+            console.log(tempDiv.children().eq(0));
+            console.log(tempDiv.children().eq(1));
+        }
+     } 
 
     /* check every 5 mins to update the background colors for the time blocks */
     /* current becomes grey, next becomes red */
@@ -93,43 +109,77 @@ function showCalendar() {
     */
 }
 
-/* add event listener for each save button */
-/* on click, save time + appointment to schedule array and local storage? */
-/* or save in the schedule, and write to the local storage on closing the app? */
-/* On open, update the currentDayEl */
+
 
 function handleSaveAppointment(event) {
-    //event.preventDefault();
     console.log("handleSaveAppointment: " + $(event.target));
 
     /* get the span text - time */
     /* get the textarea contents - appointment */
     /* store to appointmentObj */
-    /* JSON.stringify() and store to localStorage */
     var timeElement = $(event.target).siblings("span");
-    //console.log(timeElement);
     var apptEl = $(event.target).siblings("textarea");
-    //console.log(apptEl);
     appointmentObj.time = timeElement.text();
     appointmentObj.appointment = apptEl.val();
-    //console.log("Time: " + appointmentObj.time);
-    //console.log("Details: " + appointmentObj.appointment);
 
+    /* check if appointment is in the past */
+    hourNow = moment().format("HH");
+    console.log("hourNow: " + hourNow);
+
+    console.log("appointmentObj.time:" + appointmentObj.time);
+    var timeRequested = appointmentObj.time.split(" ");
+    console.log("timeRequested:" + timeRequested[0] + "," + timeRequested[1]);
+
+    var hourRequested;
+    if ((timeRequested[0] == 12) && (timeRequested[1] == "PM")) {
+        hourRequested = 12;
+        console.log("Noon hourRequested: " + hourRequested);
+    } else if (timeRequested[1] == "PM") {
+        hourRequested = 12 + Number(timeRequested[0]);
+        console.log("PM hourRequested: " + hourRequested);
+    } else {
+        hourRequested = Number(timeRequested[0]);
+        console.log("AM hourRequested: " + hourRequested);
+    }
+    if (hourNow > hourRequested) {
+        alert("Unable to make the appointment in the past.");
+        apptEl.val(""); // reset that field in the textarea to empty
+        return;
+    }
+
+    /* get the stored appointments if any */
     var tempSchedule = JSON.parse(localStorage.getItem("appointments"));
-    if (!tempSchedule) {
+    if (tempSchedule == null) {
+        /* there are no previous appointments stored */
         scheduleForToday.push(appointmentObj);
         localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
     } else {
+        /* there are existing appointments */
         scheduleForToday = tempSchedule;
-        //console.log("tempSchedule: " + tempSchedule);
-        scheduleForToday.push(appointmentObj);
-        //console.log("scheduleForToday: " + scheduleForToday);
-
+        /* check for existing appointment before adding this */
+        var isExists = false;
+        for (var i = 0; i < scheduleForToday.length; i++) {
+            if(scheduleForToday[i].time === appointmentObj.time){
+                /* overwrite the existing appointment */
+                scheduleForToday[i].appointment = appointmentObj.appointment;
+                isExists = true;
+            }
+        }
+        /* there is no previous appointment for this time */
+        if(!isExists) {
+            scheduleForToday.push(appointmentObj);
+        }
         localStorage.removeItem("appointments");
         localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
     }
 
 }
 
+/* When this document has loaded, update the date in the header */
+/* and show the calendar schedule for today */
 $('document').ready(showCalendar);
+
+/* Add event listener for the calendar "container" - event delegation. */
+/* On click on a Save button, get the corresponding time and appointment details */
+/* and do checks before making the appointment, and saving it to the schedule in local storage */
 calendarEl.on('click', "button", handleSaveAppointment);
