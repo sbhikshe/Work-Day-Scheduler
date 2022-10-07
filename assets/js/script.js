@@ -14,6 +14,7 @@ function setupTimeBlocks() {
 
     var hourNow = moment().format("HH");
     //var hourNow = Math.floor(Math.random() * 24); for testing
+    hourNow = 16; /* REMOVE !!! for testing */
     console.log("Hour now:"+  hourNow);
 
     /* for 9am to 5pm */
@@ -36,6 +37,8 @@ function setupTimeBlocks() {
         appointmentEl.addClass("col-10 col-sm-10 col-md-10 col-lg-10");
         if (i < hourNow) {
             appointmentEl.addClass("past");
+            // disable the textarea so that user cannot overwrite past appointments
+            appointmentEl.prop('disabled', true); 
         } else if (i == hourNow) {
             appointmentEl.addClass("present");
         } else if (i > hourNow) {
@@ -53,6 +56,28 @@ function setupTimeBlocks() {
         calendarEl.append(divEl);
     }
 }
+
+function timeStrToNumber(timeStr) {
+    console.log("timeStr: " + timeStr);
+
+    /* returns hour of the time in 24 hr format */
+    var hour;
+
+    var timeArray = timeStr.split(" ");
+    console.log("timeArray:" + timeArray[0] + "," + timeArray[1]);
+
+    if ((timeArray[0] == 12) && (timeArray[1] == "PM")) {
+        hour = 12;
+        console.log("Noon hour: " + hour);
+    } else if (timeArray[1] == "PM") {
+        hour = 12 + Number(timeArray[0]);
+        console.log("PM hour: " + hour);
+    } else {
+        hour = Number(timeArray[0]);
+        console.log("AM hour: " + hour);
+    }
+    return hour;
+}
 function showCalendar() {
     console.log("on load");
     var dateStr = moment().format('dddd, MMMM Do');
@@ -65,20 +90,21 @@ function showCalendar() {
     /* - retrieve from local storage */
     /* - read into the schedule array */
     /* - write to the <span> and <textarea> for each obj */
-    var tempSchedule = JSON.parse(localStorage.getItem("appointments"));
-    if (tempSchedule) {
-        scheduleForToday = tempSchedule;
+    var scheduleForToday = JSON.parse(localStorage.getItem("appointments"));
+    if (scheduleForToday) {
 
         for (var i = 0; i < scheduleForToday.length; i++) {
             var apptObj = scheduleForToday[i];
             console.log("Appt time: " + apptObj.time);
             console.log("Appt details: " + apptObj.appointment);
 
-            var tempDiv = calendarEl.children().eq(i);
+            var hour = timeStrToNumber(apptObj.time);
+            var divIndex = hour - 9;
+            var tempDiv = calendarEl.children().eq(divIndex);
             console.log(tempDiv.children().eq(0));
             console.log(tempDiv.children().eq(1));
 
-            tempDiv.children(0).eq(0).text(apptObj.time); // span element
+            //tempDiv.children(0).eq(0).text(apptObj.time); // span element
             tempDiv.children(1).eq(1).val(apptObj.appointment); // textarea element
             console.log(tempDiv.children().eq(0));
             console.log(tempDiv.children().eq(1));
@@ -124,26 +150,16 @@ function handleSaveAppointment(event) {
 
     /* check if appointment is in the past */
     hourNow = moment().format("HH");
+    hourNow = 16; // REMOVE - for testing
     console.log("hourNow: " + hourNow);
 
     console.log("appointmentObj.time:" + appointmentObj.time);
-    var timeRequested = appointmentObj.time.split(" ");
-    console.log("timeRequested:" + timeRequested[0] + "," + timeRequested[1]);
+    var hourRequested = timeStrToNumber(appointmentObj.time);
+    console.log("hourRequested: " + hourRequested);
 
-    var hourRequested;
-    if ((timeRequested[0] == 12) && (timeRequested[1] == "PM")) {
-        hourRequested = 12;
-        console.log("Noon hourRequested: " + hourRequested);
-    } else if (timeRequested[1] == "PM") {
-        hourRequested = 12 + Number(timeRequested[0]);
-        console.log("PM hourRequested: " + hourRequested);
-    } else {
-        hourRequested = Number(timeRequested[0]);
-        console.log("AM hourRequested: " + hourRequested);
-    }
     if (hourNow > hourRequested) {
-        alert("Unable to make the appointment in the past.");
-        apptEl.val(""); // reset that field in the textarea to empty
+        alert("Unable to make an appointment in the past.");
+        // The new entered text will show
         return;
     }
 
