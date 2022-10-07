@@ -13,8 +13,7 @@ var scheduleForToday = [];
 function setupTimeBlocks() {
 
     var hourNow = moment().format("HH");
-    //var hourNow = Math.floor(Math.random() * 24); for testing
-    hourNow = 16; /* REMOVE !!! for testing */
+    hourNow = 13; // remove
     console.log("Hour now:"+  hourNow);
 
     /* for 9am to 5pm */
@@ -98,14 +97,16 @@ function showCalendar() {
             console.log("Appt time: " + apptObj.time);
             console.log("Appt details: " + apptObj.appointment);
 
+            /* get the index of the div for this appointment */
+            /* get the hour, subtract 9 to get this index */
             var hour = timeStrToNumber(apptObj.time);
             var divIndex = hour - 9;
             var tempDiv = calendarEl.children().eq(divIndex);
-            console.log(tempDiv.children().eq(0));
-            console.log(tempDiv.children().eq(1));
+            console.log(tempDiv.children().eq(0)); // span
+            console.log(tempDiv.children().eq(1)); // textarea
 
-            //tempDiv.children(0).eq(0).text(apptObj.time); // span element
-            tempDiv.children(1).eq(1).val(apptObj.appointment); // textarea element
+            /* set the appointment to the textarea */
+            tempDiv.children(1).eq(1).val(apptObj.appointment);
             console.log(tempDiv.children().eq(0));
             console.log(tempDiv.children().eq(1));
         }
@@ -135,8 +136,6 @@ function showCalendar() {
     */
 }
 
-
-
 function handleSaveAppointment(event) {
     console.log("handleSaveAppointment: " + $(event.target));
 
@@ -150,7 +149,7 @@ function handleSaveAppointment(event) {
 
     /* check if appointment is in the past */
     hourNow = moment().format("HH");
-    hourNow = 16; // REMOVE - for testing
+    hourNow = 13; // remove
     console.log("hourNow: " + hourNow);
 
     console.log("appointmentObj.time:" + appointmentObj.time);
@@ -159,32 +158,33 @@ function handleSaveAppointment(event) {
 
     if (hourNow > hourRequested) {
         alert("Unable to make an appointment in the past.");
-        // The new entered text will show
         return;
     }
 
     /* get the stored appointments if any */
     var tempSchedule = JSON.parse(localStorage.getItem("appointments"));
     if (tempSchedule == null) {
-        /* there are no previous appointments stored */
+        /* there are no previous appointments stored, add new appointment */
         scheduleForToday.push(appointmentObj);
         localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
     } else {
         /* there are existing appointments */
         scheduleForToday = tempSchedule;
-        /* check for existing appointment before adding this */
+        /* check for existing appointment at the same time before adding this */
         var isExists = false;
         for (var i = 0; i < scheduleForToday.length; i++) {
             if(scheduleForToday[i].time === appointmentObj.time){
-                /* overwrite the existing appointment */
+                /* overwrite the existing appointment with new appointment */
                 scheduleForToday[i].appointment = appointmentObj.appointment;
                 isExists = true;
             }
         }
-        /* there is no previous appointment for this time */
+        /* there are previous appointment but not for this time block */
+        /* add new appointment */
         if(!isExists) {
             scheduleForToday.push(appointmentObj);
         }
+        /* remove all the appointments, and write them back with the new one */
         localStorage.removeItem("appointments");
         localStorage.setItem("appointments", JSON.stringify(scheduleForToday));
     }
